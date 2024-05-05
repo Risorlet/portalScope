@@ -6,29 +6,158 @@ import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox"
 import Button from "../../components/common/Buttons/Button";
 import { Stack, useRouter } from "expo-router";
+import axios from 'axios';
+import { ScrollView } from 'react-native-web';
+
+const logo = require("../../assets/icons/portalscope.png")
 
 const Signup = () => {
     const router = useRouter();
     const [isPasswordShown, setIsPasswordShown] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
+    const [registered, setRegistered] = useState(false);
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [userEmail, setUserEmail] = useState("");
+    const [userPassword,setUserPassword] = useState("");
+
+    const options = {
+        method: "POST",
+        url: "http://localhost:8080/portalscope/users/register",
+
+        data: {
+            firstName: firstName,
+            lastName: lastName,
+            email: userEmail,
+            password: userPassword,
+            isAdmin: false
+        }
+    };
+
+    const handleSignUp = async () => {
+        if(!isChecked){
+            alert("You didn't agree with our terms and conditions!");
+        } else {
+            try {
+                const response = await axios.request(options);
+                if(response.status === 201) {
+                    setRegistered(true);
+                } else {
+                    setRegistered(false);
+                }
+                console.log(response.data);
+                console.log(registered);
+                if(registered) {
+                    router.push({
+                        pathname:'/home/[id]',
+                        params: {
+                            id: response.data.id,
+                            name: response.data.firstName
+                        }
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
-            <Stack.Screen options={{headerShadowVisible: false, headerTitle: ""}}/>
+            <Stack.Screen options={{
+                headerShadowVisible: false,
+                headerTitle: "Create New Account"
+                }}
+            />
+            <ScrollView>
             <View style={{ flex: 1, marginHorizontal: 22 }}>
+                
+                <Image 
+                    style = {{
+                        height: 150,
+                        width: 150,
+                        marginLeft:'auto',
+                        marginRight:'auto'
+                    }} 
+                    source={logo}
+                />
+                <Text style={{
+                        fontSize: 20,
+                        fontWeight: 'bold',
+                        textAlign:'center',
+                        color: COLORS.black,
+                        marginTop:-20
+                    }}
+                >portalScope</Text>
                 <View style={{ marginVertical: 22 }}>
                     <Text style={{
                         fontSize: 22,
                         fontWeight: 'bold',
-                        marginVertical: 12,
+                        marginTop: 12,
+                        marginBottom: -5,
                         color: COLORS.black
                     }}>
-                        Create Account
+                        Register with us!
                     </Text>
+                </View>
 
+                <View style={{ marginBottom: 12 }}>
                     <Text style={{
                         fontSize: 16,
-                        color: COLORS.black
-                    }}>Connect with your friend today!</Text>
+                        fontWeight: 400,
+                        marginVertical: 8
+                    }}>First Name</Text>
+
+                    <View style={{
+                        width: "100%",
+                        height: 48,
+                        borderColor: COLORS.black,
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        paddingLeft: 22
+                    }}>
+                        <TextInput
+                            placeholder='Enter your first name'
+                            placeholderTextColor={COLORS.black}
+                            keyboardType='default'
+                            style={{
+                                width: "100%"
+                            }}
+                            onChangeText={(text) => setFirstName(text)}
+                        />
+                    </View>
+                </View>
+
+                <View style={{ marginBottom: 12 }}>
+                    <Text style={{
+                        fontSize: 16,
+                        fontWeight: 400,
+                        marginVertical: 8
+                    }}>Last Name</Text>
+
+                    <View style={{
+                        width: "100%",
+                        height: 48,
+                        borderColor: COLORS.black,
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        paddingLeft: 22
+                    }}>
+                        <TextInput
+                            placeholder='Enter your last name'
+                            placeholderTextColor={COLORS.black}
+                            keyboardType='default'
+                            style={{
+                                width: "100%"
+                            }}
+                            onChangeText={(text) => setLastName(text)}
+                        />
+                    </View>
                 </View>
 
                 <View style={{ marginBottom: 12 }}>
@@ -55,47 +184,7 @@ const Signup = () => {
                             style={{
                                 width: "100%"
                             }}
-                        />
-                    </View>
-                </View>
-
-                <View style={{ marginBottom: 12 }}>
-                    <Text style={{
-                        fontSize: 16,
-                        fontWeight: 400,
-                        marginVertical: 8
-                    }}>Mobile Number</Text>
-
-                    <View style={{
-                        width: "100%",
-                        height: 48,
-                        borderColor: COLORS.black,
-                        borderWidth: 1,
-                        borderRadius: 8,
-                        alignItems: "center",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        paddingLeft: 22
-                    }}>
-                        <TextInput
-                            placeholder='+91'
-                            placeholderTextColor={COLORS.black}
-                            keyboardType='numeric'
-                            style={{
-                                width: "12%",
-                                borderRightWidth: 1,
-                                borderLeftColor: COLORS.grey,
-                                height: "100%"
-                            }}
-                        />
-
-                        <TextInput
-                            placeholder='Enter your phone number'
-                            placeholderTextColor={COLORS.black}
-                            keyboardType='numeric'
-                            style={{
-                                width: "80%"
-                            }}
+                            onChangeText={(email) => setUserEmail(email)}
                         />
                     </View>
                 </View>
@@ -124,6 +213,7 @@ const Signup = () => {
                             style={{
                                 width: "100%"
                             }}
+                            onChangeText={(pass) => setUserPassword(pass)}
                         />
 
                         <TouchableOpacity
@@ -153,7 +243,7 @@ const Signup = () => {
                         style={{ marginRight: 8 }}
                         value={isChecked}
                         onValueChange={setIsChecked}
-                        color={isChecked ? COLORS.primary : undefined}
+                        color={isChecked ? "#7accb8" : undefined}
                     />
 
                     <Text>I aggree to the terms and conditions</Text>
@@ -166,7 +256,8 @@ const Signup = () => {
                         marginTop: 18,
                         marginBottom: 4,
                     }}
-                    onPress = {() => router.push('/login/login')}
+                    color = "#7accb8"
+                    onPress = {handleSignUp}
                 />
 
                 <View style={{
@@ -174,19 +265,20 @@ const Signup = () => {
                     justifyContent: "center",
                     marginVertical: 22
                 }}>
-                    <Text style={{ fontSize: 16, color: COLORS.black }}>Already have an account</Text>
+                    <Text style={{ fontSize: 16, color: COLORS.black }}>Already have an account?</Text>
                     <Pressable
-                        onPress={() => navigation.navigate("Login")}
+                        onPress={() => router.push('/login/login')}
                     >
                         <Text style={{
                             fontSize: 16,
-                            color: COLORS.primary,
+                            color: "#7accb8",
                             fontWeight: "bold",
                             marginLeft: 6
                         }}>Login</Text>
                     </Pressable>
                 </View>
             </View>
+            </ScrollView>
         </SafeAreaView>
     )
 }

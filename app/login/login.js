@@ -8,8 +8,7 @@ import {
     Image,
     StyleSheet,
     KeyboardAvoidingView,
-    Pressable,
-    Alert
+    Pressable
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { COLORS, SHADOWS, SIZES, FONT } from '../../constants';
@@ -22,26 +21,31 @@ const Login = () => {
     const [userId, setUserId] = useState('');
     const [userPassword, setUserPassword] = useState('');
 
-    const handleLogin = () => {
-        const url = 'http://192.168.0.104:8080/portalscope/users/login'
-    
-        axios.post(url, 
-        {
+    const options = {
+        method: "POST",
+        url: "http://localhost:8080/portalscope/users/login",
+
+        data: {
             email: userId,
             password: userPassword
-        },
-        {
-            headers: {
-            'Content-Type': 'application/json'
-            }
-        })
-        .then((response) => {
-            console.log(response);
-            alert("Hello!");
-        })
-        .catch((error) => {
+        }
+    }
+
+    const handleLogin = async () => {
+
+        try {
+            const response = await axios.request(options);
+            console.log(response.data);
+            router.push({
+                pathname:'/home/[id]',
+                params: {
+                    id: response.data.id,
+                    name: response.data.firstName
+                }
+            });
+        } catch (error) {
             console.log(error);
-        });
+        }
     }
     
 
@@ -63,7 +67,7 @@ const Login = () => {
 
             <View style={styles.footer}>
                 <Text style={styles.textBasic('black',SIZES.medium)}>Don't have an account?</Text>
-                <Pressable style={{padding:5}} onPress={() => router.push('/login/signUp')}>
+                <Pressable style={{padding:5}} onPress={() => {router.push('/login/signUp')}}>
                     <Text style={styles.textBasic('#9066ee',SIZES.small)}>Signup</Text>
                 </Pressable>
             </View>

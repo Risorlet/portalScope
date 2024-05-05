@@ -1,18 +1,23 @@
 import { useState } from "react";
 import { SafeAreaView, ScrollView, View } from "react-native";
-import { Stack, useRouter } from "expo-router";
+import { Stack, useGlobalSearchParams, useRouter } from "expo-router";
 
-import { COLORS, icons, images, SIZES } from "../constants";
+import { COLORS, icons, images, SIZES } from "../../constants";
 import {
   Nearbyjobs,
   Popularjobs,
   ScreenHeaderBtn,
   Welcome,
-} from "../components";
+} from "../../components";
 
 const Home = () => {
+  const {name} = useGlobalSearchParams();
   const router = useRouter()
   const [searchTerm, setSearchTerm] = useState("");
+
+  const openSideBar = () => {
+
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
@@ -21,7 +26,11 @@ const Home = () => {
           headerStyle: { backgroundColor: COLORS.lightWhite },
           headerShadowVisible: false,
           headerLeft: () => (
-            <ScreenHeaderBtn iconUrl={icons.menu} dimension='60%' />
+            <ScreenHeaderBtn 
+            iconUrl={icons.menu}
+            dimension='60%'
+            handlePress={openSideBar}
+            />
           ),
           headerRight: () => (
             <ScreenHeaderBtn iconUrl={images.profile} dimension='100%' />
@@ -38,6 +47,7 @@ const Home = () => {
           }}
         >
           <Welcome
+            userName = {name}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             handleClick={() => {
