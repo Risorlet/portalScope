@@ -23,7 +23,7 @@ const Signup = () => {
 
     const options = {
         method: "POST",
-        url: "http://localhost:8080/portalscope/users/register",
+        url: "http://192.168.49.252:8080/portalscope/users/register",
 
         data: {
             firstName: firstName,
@@ -40,12 +40,12 @@ const Signup = () => {
         } else {
             try {
                 const response = await axios.request(options);
-                if(response.status === 201) {
+                if(response.status == 201) {
                     setRegistered(true);
                 } else {
                     setRegistered(false);
                 }
-                console.log(response.data);
+                console.log(response);
                 console.log(registered);
                 if(registered) {
                     router.push({
@@ -70,7 +70,6 @@ const Signup = () => {
                 headerTitle: "Create New Account"
                 }}
             />
-            <ScrollView>
             <View style={{ flex: 1, marginHorizontal: 22 }}>
                 
                 <Image 
@@ -278,9 +277,8 @@ const Signup = () => {
                     </Pressable>
                 </View>
             </View>
-            </ScrollView>
         </SafeAreaView>
     )
 }
 
-export default Signup
+export default Signup;

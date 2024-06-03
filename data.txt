@@ -1,0 +1,7 @@
+{
+    "firstName": "Argha",
+    "lastName": "Ghosh",
+    "email": "arghagh120105@gmail.com",
+    "isAdmin": "true",
+    "password": "Pass#105"
+}
